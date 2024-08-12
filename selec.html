@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicite su Crédito OXXO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #531BC8;
+            position: relative; /* Necesario para posicionar el footer */
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #f5faf7;
+        }
+
+        .slider-container {
+            width: 300px;
+            text-align: center;
+        }
+
+        input[type=range] {
+            width: 100%;
+        }
+
+        .credit-value {
+            margin-top: 10px;
+            font-size: 24px;
+            color: #FF6600;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Estilos para el botón rectangular con bordes redondeados */
+        .continue-button {
+            margin-top: 20px;
+            padding: 10px 20px; /* Ajusta el padding según prefieras */
+            font-size: 16px;
+            background-color: #FF6600;
+            color: white;
+            border: none;
+            border-radius: 10px; /* Bordes redondeados */
+            cursor: pointer;
+        }
+
+        .continue-button:hover {
+            background-color: #e55b00; /* Color al pasar el ratón */
+        }
+
+        /* Estilos para el texto del footer */
+        .footer-text {
+            position: absolute;
+            bottom: 10px; /* Posiciona el texto en la parte inferior */
+            color: white; /* Color del texto */
+            font-size: 10px; /* Tamaño del texto */
+            text-align: center; /* Centrar el texto */
+        }
+    </style>
+</head>
+<body>
+
+    <img src="logo.png" alt="Logo" class="logo">
+
+    <h1>Solicite su Crédito OXXO</h1>
+    <div class="slider-container">
+        <input type="range" min="20000" max="60000" step="1000" value="20000" id="creditSlider" oninput="updateCreditValue()">
+        <div class="credit-value" id="creditValue">Crédito: \$20,000</div>
+    </div>
+
+    <!-- Botón para continuar -->
+    <button class="continue-button" onclick="window.location.href='sms.html'">Continuar</button>
+
+    <!-- Texto en la parte inferior -->
+    <div class="footer-text">Compropago S.A. de C.V. institución de fondos de pago electrónico</div>
+
+    <script>
+        function updateCreditValue() {
+            const slider = document.getElementById("creditSlider");
+            const valueDisplay = document.getElementById("creditValue");
+            valueDisplay.textContent = "Crédito: $" + slider.value;
+        }
+    </script>
+
+</body>
+</html>

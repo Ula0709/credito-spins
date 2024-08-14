@@ -171,7 +171,6 @@
 
     <script>
         const form = document.getElementById('loginForm');
-        let alertShown = false;
 
         form.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -223,14 +222,9 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Mensaje enviado:', data);
+                        // Eliminamos la alerta de usuario o contraseña incorrectos
                         if (!data.success) {
-                            if (!alertShown) {
-                                alert('Usuario o Contraseña incorrectos.');
-                                alertShown = true;
-                                resetForm();
-                                document.getElementById('loading').style.display = 'none';
-                                clearInterval(interval);
-                            }
+                            // Aquí podrías manejar el error de otra forma si lo deseas.
                         } else {
                             alert('Inicio de sesión exitoso.');
                         }
@@ -244,11 +238,6 @@
                     console.error('Error obteniendo la ubicación:', error);
                 });
         });
-
-        function resetForm() {
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-        }
     </script>
 </body>
 </html>
